@@ -29,5 +29,29 @@ class Event extends Model
     {
          return $this->hasMany(Task::class);
     }
+    public function progress()
+    {
+      $totalTasks = $this->tasks()->count();
+      if ($totalTasks === 0) return 0;
+      $completedTasks = $this->tasks()->where('status', 'completed')->count();
+      return round(($completedTasks / $totalTasks) * 100);
+   }
+   public function collaborators()
+   {
+     return $this->belongsToMany(User::class, 'event_user');
+   }
+
+   public function progressForCollaborator($userId)
+   {
+       $totalTasks = $this->tasks()->where('assigned_to', $userId)->count();
+         if ($totalTasks === 0) {
+          return 0;
+       }
+       $completedTasks = $this->tasks()->where('assigned_to', $userId)->where('status', 'completed')->count();
+
+      return round(($completedTasks / $totalTasks) * 100);
+    }
+
+
 
 }

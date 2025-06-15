@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Broadcast;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,13 +14,21 @@ class AppServiceProvider extends ServiceProvider
     {
         $router = $this->app->make('router');
         $router->aliasMiddleware('role', \App\Http\Middleware\RoleMiddleware::class);
+        $router->aliasMiddleware('auth:sanctum', \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class);
+
     }
+
 
     /**
      * Bootstrap any application services.
      */
-    public function boot()
+    public function boot(): void
     {
-        //
+        Broadcast::routes();
+
+       require base_path('routes/channels.php');
+
+
+
     }
 }
